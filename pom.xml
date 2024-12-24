@@ -4,9 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.atguigu.cloud</groupId>
+    <groupId>com.yangyang.cloud</groupId>
     <artifactId>CloudPlanner</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>global-commons</module>
+        <module>task-submission-service</module>
+        <module>task-storage-service8001</module>
+        <module>task-storage-service8002</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
@@ -25,7 +32,6 @@
         <spring.boot.version>3.2.0</spring.boot.version>
         <spring.cloud.version>2023.0.0</spring.cloud.version>
         <spring.cloud.alibaba.version>2022.0.0.0-RC2</spring.cloud.alibaba.version>
-        <mp.version>3.5.5</mp.version>
     </properties>
 
     <dependencyManagement>
@@ -115,11 +121,6 @@
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring.boot.test.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
