@@ -1,6 +1,7 @@
 package com.yangyang.cloud.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yangyang.cloud.entities.Task;
 import com.yangyang.cloud.entities.TaskDto;
 import com.yangyang.cloud.response.ResultData;
@@ -19,19 +20,27 @@ public class TaskController {
     private TaskService taskService;
 
     /**
-     *查询所有任务
+     *查询所有任务, userid
      * */
     @GetMapping("/list")
-    public ResultData<List<Task>> taskList() {
+    public ResultData<List<Task>> taskList(@RequestHeader("userid") String userid) {
 //        List<TaskDto> taskDtoList = taskService.list().stream().map(task -> {
 //            TaskDto taskDto = new TaskDto();
 //            BeanUtils.copyProperties(task, taskDto);
 //            return taskDto;
 //        }).collect(Collectors.toList());
 
+        System.out.println("userid: " + userid);
+
         System.out.println(taskService.list());
 
-        return ResultData.success(taskService.list());
+        // 通过userid来查询某个用户的所有任务
+        LambdaQueryWrapper<Task> w = new LambdaQueryWrapper<>();
+        w.eq(Task::getUserId, userid);
+
+
+
+        return ResultData.success(taskService.list(w));
     }
     /**
      *
@@ -52,7 +61,7 @@ public class TaskController {
 
     /**
      *
-     * 添加任务
+     * 添加任务, userid
      *
      */
     @PostMapping("/add")
@@ -65,7 +74,7 @@ public class TaskController {
 
     /**
      *
-     * 修改任务
+     * 修改任务, userid
      */
     @PutMapping("/update")
     public ResultData<String> updateTask(@RequestBody TaskDto taskDto) {

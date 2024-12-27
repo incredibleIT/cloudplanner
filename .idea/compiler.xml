@@ -9,8 +9,10 @@
         <module name="task-submission-service" />
         <module name="task-storage-service8001" />
         <module name="global-commons" />
-        <module name="task-storage-service8002" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="task-storage-service8002" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

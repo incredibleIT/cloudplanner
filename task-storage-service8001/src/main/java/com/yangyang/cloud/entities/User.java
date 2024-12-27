@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,5 +33,6 @@ public class User {
     private LocalDateTime updatedAt;  // 更新时间
 
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer deleted;  // 逻辑删除字段
 }

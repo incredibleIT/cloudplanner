@@ -11,9 +11,12 @@ spring:
     password: root
 
 
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
   type-aliases-package: com.yangyang.cloud.entities
   configuration:
     map-underscore-to-camel-case: true
+
+
 

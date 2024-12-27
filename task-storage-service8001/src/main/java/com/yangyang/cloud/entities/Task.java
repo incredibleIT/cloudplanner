@@ -2,6 +2,7 @@ package com.yangyang.cloud.entities;
 
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,9 @@ public class Task {
     private String description;   // 任务描述
     private Integer priority;     // 任务优先级
     private String category;      // 任务分类（工作、生活等）
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime dueDate;    // 截止日期
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime reminderTime;   // 提醒时间
     private String status;        // 任务状态（待办、进行中、已完成）
 

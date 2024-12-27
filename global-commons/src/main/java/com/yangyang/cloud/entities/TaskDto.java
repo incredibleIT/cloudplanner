@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class TaskDto {
     private Integer id;
+    private Integer userId;
     private String title;         // 任务标题
     private String description;   // 任务描述
     private Integer priority;     // 任务优先级

@@ -13,3 +13,13 @@
     Task
     FinanceRecord
     Category
+
+
+登录校验: SpringSecurity
+
+登录过程:  
+          1. 自定义登录接口, 自定义接口中调用ProviderManager的方法进行认证, 认证通过生成Token, 将登录信息存入缓存层  √
+          2. 自定义UserDetailService实现, 在其中查询数据库信息  √
+
+校验过程: 
+          1. 定义Token校验过滤器(获取Token, 解析Token获取uid, 从缓存层查uid对应的用户信息, 存入SecurityContextHolder)
