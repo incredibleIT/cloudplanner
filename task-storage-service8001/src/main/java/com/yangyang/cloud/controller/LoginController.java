@@ -35,8 +35,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public ResultData logout() {
-
-
+        
         return loginService.logout();
 
     }

@@ -2,11 +2,13 @@ package com.yangyang.cloud.entities;
 
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class FinanceRecord {
     private Double amount;            // 金额
     private String category;          // 财务分类（如餐饮、交通等）
     private String note;              // 备注
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime transactionDate;  // 交易日期
 
 
@@ -33,5 +36,6 @@ public class FinanceRecord {
     private LocalDateTime updatedAt;  // 更新时间
 
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer deleted;  // 逻辑删除字段
 }
