@@ -29,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/finace/list").permitAll()  // 公开请求
+                        .requestMatchers("/user/register", "/user/login", "/finance/list", "index.html", "login1.html", "register.html", "financerecord.html", "task4.html", "test.html").permitAll()  // 公开请求
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

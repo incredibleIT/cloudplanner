@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>账务流水管理系统</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(80, 94, 115, 0.8), rgba(77, 105, 96, 0.8), rgba(129, 127, 71, 0.8), rgba(125, 100, 117, 0.8), rgba(112, 123, 90, 0.8), rgba(158, 122, 97, 0.8), rgba(58, 79, 72, 0.8));
+      background-size: 300% 300%;
+      animation: gradientFlow 10s infinite linear;
+    }
+
+    @keyframes gradientFlow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #fff;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transition: background 0.3s ease;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 30px;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .form-container input,
+    .form-container select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      outline: none;
+    }
+
+    .form-container input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-container button {
+      background: linear-gradient(135deg, #4facfe, #8bd5d8);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .form-container button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(105, 193, 193, 0.5);
+    }
+
+    .form-container button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .form-container .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-container .button-group button {
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 14px;
+      }
+
+      .form-container {
+        padding: 15px;
+      }
+
+      .form-container button {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>账务流水管理系统</h1>
+  <h2>流水记录</h2>
+  <div class="table-container">
+    <table id="financeTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>类型</th>
+          <th>金额</th>
+          <th>备注</th>
+          <th>交易日期</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="financeTbody">
+        <!-- 动态填充流水记录 -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-container">
+    <h2>添加/编辑流水</h2>
+    <input type="hidden" id="recordId" />
+
+    <label for="recordType">类型：</label>
+    <select id="recordType" required>
+      <option value="收入">收入</option>
+      <option value="支出">支出</option>
+    </select>
+
+    <label for="recordAmount">金额：</label>
+    <input type="number" id="recordAmount" placeholder="请输入金额" required />
+
+    <label for="recordNote">备注：</label>
+    <input type="text" id="recordNote" placeholder="请输入备注" required />
+
+    <label for="recordDate">交易日期：</label>
+    <input type="datetime-local" id="recordDate" required />
+
+    <div class="button-group">
+      <button id="saveRecordBtn">保存流水</button>
+      <button id="updateRecordBtn">更新流水</button>
+    </div>
+  </div>
+
+  <script>
+    // 初始化流水记录操作代码...
+
+    // 手动解析token
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/'); // 处理 URL 编码
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    }
+
+    //  获取任务表
+    function get() {
+
+      const token = localStorage.getItem("userToken")
+      console.log(token)
+
+      const tokenDecoded = parseJwt(token);  // 解析当前用户id
+
+      fetch("http://127.0.0.1:8001/finace/list", {
+        method: "GET",
+        headers: {
+          userid: tokenDecoded.userid,
+          token: token
+        }
+      })
+        .then(response => response.json())
+        .then(data => data.data.forEach(record => {
+          console.log(record)
+          const row = document.createElement("tr")
+
+          row.innerHTML = `
+                      <td>${record.id}</td>
+                      <td>${record.type}</td>
+                      <td>${record.amount}</td>
+                      <td>${record.note}</td>
+                      <td>${record.transactionDate}</td>
+                      <td>
+                        <button onclick="edit(${record.id}, '${record.type}', '${record.amount}', '${record.note}', '${record.transactionDate}')">编辑</button>
+                        <button onclick="deleteTask(${record.id})">删除</button>
+                      </td>`
+
+          console.log(document.querySelector("#financeTable tbody"));
+          document.querySelector("#financeTable tbody").appendChild(row)
+        }))
+        .catch(err => console.error('错了', err))
+      // reset()
+    }
+
+    //  添加任务
+    async function add() {
+
+      const token = localStorage.getItem("userToken")
+
+      const tokenDecoded = parseJwt(token);
+
+      const recordType = document.getElementById("recordType").value
+      const recordAmount = document.getElementById("recordAmount").value
+      const recordNote = document.getElementById("recordNote").value
+      const recordDate = document.getElementById("recordDate").value
+
+      console.log(tokenDecoded.userid)
+
+      await fetch("http://127.0.0.1:8001/finace/add", {
+        method: 'POST',
+        headers: {
+          token: token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+
+          userId: tokenDecoded.userid,
+          type: recordType,
+          amount: recordAmount,
+          note: recordNote,
+          transactionDate: recordDate
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+      resetForm()
+      get()
+      reset()
+    }
+
+    let gloab_id
+
+    // 编辑任务
+    function edit(id, type, amount, note, transactionDate) {
+
+      gloab_id = id
+
+      document.getElementById("recordType").value = type
+      document.getElementById("recordAmount").value = amount
+      document.getElementById("recordNote").value = note
+      document.getElementById("recordDate").value = transactionDate
+
+    }
+
+    // 更新任务
+    async function update() {
+
+      const token = localStorage.getItem("userToken")
+
+      const recordType = document.getElementById("recordType").value
+      const recordAmount = document.getElementById("recordAmount").value
+      const recordNote = document.getElementById("recordNote").value
+      const recordDate = document.getElementById("recordDate").value
+
+
+      console.log(gloab_id)
+      await fetch("http://127.0.0.1:8001/finace/update", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          token: token
+        },
+        body: JSON.stringify({
+          id: gloab_id,
+          type: recordType,
+          amount: recordAmount,
+          note: recordNote,
+          transactionDate: recordDate
+
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+      resetForm()
+      get()
+      reset()
+    }
+
+    document.getElementById("updateRecordBtn").addEventListener("click", update);
+
+
+
+    // 删除任务
+    async function deleteTask(id) {
+      if (!confirm("确定要删除该任务吗？")) return;
+
+      const token = localStorage.getItem("userToken")
+
+      console.log(token)
+
+      console.log(id)
+
+
+      await fetch(`http://127.0.0.1:8001/finace/del/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json', // 设置内容类型
+          token: token
+        },
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('删除成功');
+          } else {
+            console.error('删除失败');
+          }
+        })
+      resetForm()
+      get()
+      reset()
+    }
+
+
+
+    // // 重置表单
+    function resetForm() {
+      document.getElementById("financeTbody").innerHTML = ''
+    }
+
+    // // 初始化事件监听
+    document.getElementById("saveRecordBtn").addEventListener("click", add);
+
+    // // 页面加载时获取任务列表
+    get()
+
+    function reset() {
+      document.getElementById("recordType").value = ''
+      document.getElementById("recordAmount").value = ''
+      document.getElementById("recordNote").value = ''
+      document.getElementById("recordDate").value = ''
+    }
+
+  </script>
+</body>
+
+</html>

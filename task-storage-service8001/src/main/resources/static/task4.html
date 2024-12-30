@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(80, 94, 115, 0.8), rgba(77, 105, 96, 0.8), rgba(129, 127, 71, 0.8), rgba(125, 100, 117, 0.8), rgba(112, 123, 90, 0.8), rgba(158, 122, 97, 0.8), rgba(58, 79, 72, 0.8));
+      background-size: 300% 300%;
+      /* 放大背景，制造平滑过渡效果 */
+      animation: gradientFlow 10s infinite linear;
+      /* 无限平滑动画 */
+    }
+
+    @keyframes gradientFlow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #fff;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transition: background 0.3s ease;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 30px;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      outline: none;
+    }
+
+    .form-container input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-container button {
+      background: linear-gradient(135deg, #4facfe, #8bd5d8);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .form-container button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(105, 193, 193, 0.5);
+    }
+
+    .form-container button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .form-container .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-container .button-group button {
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 14px;
+      }
+
+      .form-container {
+        padding: 15px;
+      }
+
+      .form-container button {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>任务管理系统</h1>
+  <h2>任务列表</h2>
+  <div class="table-container">
+    <table id="taskTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>标题</th>
+          <th>描述</th>
+          <th>状态</th>
+          <th>截至日期</th>
+          <th>提醒日期</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="tbb">
+        <!-- 动态填充任务列表 -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-container">
+    <h2>添加/编辑任务</h2>
+    <input type="hidden" id="taskId" />
+    <label for="taskTitle">标题：</label>
+    <input type="text" id="taskTitle" placeholder="请输入任务标题" required />
+
+    <label for="taskDesc">描述：</label>
+    <input type="text" id="taskDesc" placeholder="请输入任务描述" required />
+
+    <label for="taskStatus">任务状态：</label>
+    <input type="text" id="taskStatus" placeholder="请输入任务状态" required />
+
+    <label for="taskDueDate">任务截止日期：</label>
+    <input type="datetime-local" id="taskDueDate" placeholder="请输入任务截止时间" required />
+
+    <label for="taskReminderTime">任务提醒日期：</label>
+    <input type="datetime-local" id="taskReminderTime" placeholder="请输入任务提醒时间" required />
+
+
+    <div class="button-group">
+      <button id="saveTaskBtn">保存任务</button>
+      <button id="updateTaskBtn">更新任务</button>
+    </div>
+  </div>
+
+  <script>
+    // 手动解析token
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/'); // 处理 URL 编码
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    }
+
+    //  获取任务表
+    function get() {
+
+      const token = localStorage.getItem("userToken")
+      console.log(token)
+
+      const tokenDecoded = parseJwt(token);
+
+      fetch("http://127.0.0.1:8001/task/list", {
+        method: "GET",
+        headers: {
+          userid: tokenDecoded.userid,
+          token: token
+        }
+      })
+        .then(response => response.json())
+        .then(data => data.data.forEach(task => {
+          console.log(task)
+          const row = document.createElement("tr")
+          row.innerHTML = `
+                      <td>${task.id}</td>
+                      <td>${task.title}</td>
+                      <td>${task.description}</td>
+                      <td>${task.status}</td>
+                      <td>${task.dueDate}</td>
+                      <td>${task.reminderTime}</td>
+                      <td>
+                        <button onclick="edit(${task.id}, '${task.title}', '${task.description}', '${task.status}')">编辑</button>
+                        <button onclick="deleteTask(${task.id})">删除</button>
+                      </td>`
+          document.querySelector("#taskTable tbody").appendChild(row)
+        }))
+        .catch(err => console.error('错了', err))
+      reset()
+    }
+
+    //  添加任务
+    async function add() {
+
+      const token = localStorage.getItem("userToken")
+
+      console.log(token)
+
+      const tokenDecoded = parseJwt(token);
+
+      const title = document.getElementById("taskTitle").value
+      const description = document.getElementById("taskDesc").value
+      const status = document.getElementById("taskStatus").value
+      const dueDate = document.getElementById("taskDueDate").value
+      const reminderTime = document.getElementById("taskReminderTime").value
+
+      console.log(dueDate)
+      console.log(reminderTime)
+
+      await fetch("http://127.0.0.1:8001/task/add", {
+        method: 'POST',
+        headers: {
+          token: token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+
+          userId: tokenDecoded.userid,
+          title: title,
+          description: description,
+          status: status,
+          dueDate: dueDate,
+          reminderTime: reminderTime,
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+      resetForm()
+      get()
+      reset()
+    }
+
+    let gloab_id
+
+    // 编辑任务
+    function edit(id, title, description, status) {
+
+      gloab_id = id
+
+      document.getElementById("taskTitle").value = title;
+      document.getElementById("taskDesc").value = description;
+      document.getElementById("taskStatus").value = status;
+
+    }
+
+    // 更新任务
+    async function update() {
+
+      const token = localStorage.getItem("userToken")
+
+      console.log(token)
+
+      const tilte = document.getElementById("taskTitle").value
+      const description = document.getElementById("taskDesc").value
+      const status = document.getElementById("taskStatus").value
+
+      console.log(status)
+      console.log(gloab_id)
+
+      await fetch("http://127.0.0.1:8001/task/update", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          token: token
+        },
+        body: JSON.stringify({
+          id: gloab_id,
+          title: tilte,
+          description: description,
+          status: status,
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+      resetForm()
+      get()
+      reset()
+    }
+
+    document.getElementById("updateTaskBtn").addEventListener("click", update);
+
+
+
+    // 删除任务
+    async function deleteTask(id) {
+      if (!confirm("确定要删除该任务吗？")) return;
+
+      const token = localStorage.getItem("userToken")
+
+      console.log(token)
+
+      console.log(id)
+
+
+      await fetch(`http://127.0.0.1:8001/task/del/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json', // 设置内容类型
+          token: token
+        },
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('删除成功');
+          } else {
+            console.error('删除失败');
+          }
+        })
+      resetForm()
+      get()
+      reset()
+    }
+    // // 重置表单
+    function resetForm() {
+      document.getElementById("tbb").innerHTML = ''
+    }
+
+    // // 初始化事件监听
+    document.getElementById("saveTaskBtn").addEventListener("click", add);
+
+    // // 页面加载时获取任务列表
+    get()
+
+    function reset() {
+      document.getElementById('taskTitle').value = ''
+      document.getElementById('taskDesc').value = ''
+      document.getElementById('taskStatus').value = ''
+    }
+
+    // 现在需要在用户点击保存任务时取到当前用户的id, 并且赋给hidden的taskId
+  </script>
+
+</body>
+
+</html>
