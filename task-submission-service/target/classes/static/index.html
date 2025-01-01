@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户系统主页</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 20px;
+    }
+
+    .button-group button {
+      padding: 15px 30px;
+      font-size: 16px;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1abc9c, #16a085);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .button-group button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(22, 160, 133, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>欢迎来到全能管理系统</h1>
+  <div class="button-group">
+    <button onclick="location.href='login1.html'">去登录</button>
+    <button onclick="location.href='register.html'">去注册</button>
+  </div>
+</body>
+
+</html>

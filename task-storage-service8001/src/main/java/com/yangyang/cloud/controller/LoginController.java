@@ -18,10 +18,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-
-
     @PostMapping("login")
     public ResultData login(@RequestBody User user) {
         return loginService.login(user);

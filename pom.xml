@@ -13,6 +13,7 @@
         <module>task-submission-service</module>
         <module>task-storage-service8001</module>
         <module>task-storage-service8002</module>
+        <module>task-storage-service8002</module>
     </modules>
 
     <properties>

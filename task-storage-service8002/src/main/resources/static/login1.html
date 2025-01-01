@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户登录</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .form-container label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #fff;
+      text-align: left;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      outline: none;
+    }
+
+    .form-container input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1abc9c, #16a085);
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .form-container button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(22, 160, 133, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>用户登录</h1>
+  <div class="form-container">
+    <label for="username">用户名：</label>
+    <input type="email" id="username" placeholder="请输入邮箱" required />
+
+    <label for="loginPassword">密码：</label>
+    <input type="password" id="loginPassword" placeholder="请输入密码" required />
+
+    <button id="loginBtn">登录</button>
+  </div>
+
+  <script>
+    document.getElementById("loginBtn").addEventListener("click", async function () {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("loginPassword").value;
+
+      if (!username || !password) {
+        alert("请输入有效的邮箱和密码！");
+        return;
+      }
+
+      const response = await fetch("http://127.0.0.1:8001/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+      // if (data.success) {
+      //   alert("登录成功！");
+      // } else {
+      //   alert("登录失败，请检查邮箱和密码。");
+      // }
+
+      if (data.code == 200) {
+        console.log(data.data.token)
+
+        // 本地存储token
+        localStorage.setItem("userToken", data.data.token)
+
+        window.location.href = 'test.html'
+      }
+    });
+  </script>
+</body>
+
+</html>

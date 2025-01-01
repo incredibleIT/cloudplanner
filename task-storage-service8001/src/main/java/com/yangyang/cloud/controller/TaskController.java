@@ -23,7 +23,7 @@ public class TaskController {
      *查询所有任务, userid
      * */
     @GetMapping("/list")
-    public ResultData<List<Task>> taskList(@RequestHeader("userid") String userid) {
+    public ResultData taskList(@RequestHeader("userid") String userid) {
 //        List<TaskDto> taskDtoList = taskService.list().stream().map(task -> {
 //            TaskDto taskDto = new TaskDto();
 //            BeanUtils.copyProperties(task, taskDto);
